@@ -1,0 +1,11 @@
+{
+  "name": "kuriki-automotive-portfolio",
+  "version": "1.0.0",
+  "description": "Luxury automotive photography portfolio website",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "dev": "node server.mjs",
+    "check": "node --check server.mjs"
+  }
+}
