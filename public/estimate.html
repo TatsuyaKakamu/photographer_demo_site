@@ -1,12 +1,108 @@
-<!doctype html><html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Estimate / Request</title><link rel="stylesheet" href="/styles.css"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet"></head><body>
-<header class="site-header"><div class="container nav-row"><a class="brand" href="/">KURIKI AUTOMOTIVE PHOTOGRAPHY</a><nav><ul><li><a href="/">HOME</a></li><li><a href="/portfolio.html">PORTFOLIO</a></li><li><a class="active" href="/estimate.html">ESTIMATE</a></li><li><a href="/about.html">ABOUT</a><li><a href="/notes.html">NOTES</a></li></ul></nav></div></header>
-<main class="section"><div class="container"><h1 style="font-family:var(--font-display);font-size:clamp(2rem,6vw,3.6rem)">Estimate / Request</h1><p class="lead">本ページの金額は概算です。詳細条件確認後、正式見積もりを案内します。<a href="/notes.html">注意事項を見る</a></p><div class="two-col"><form id="estimate-form">
-<fieldset><legend>ベースプラン</legend><label><input type="radio" checked disabled> 1台撮影プラン（35,000円 税別）</label></fieldset>
-<fieldset><legend>オプション</legend><div id="option-list"></div></fieldset>
-<fieldset><legend>撮影条件</legend><label>出張距離<select name="travel_distance"><option value="0">20km以内（追加なし）</option><option value="1">20〜50km（+5,000円）</option><option value="2">50km超（+10,000円）</option></select></label></fieldset>
-<fieldset><legend>お客様情報</legend><label>名前*<input name="name" required></label><label>メール*<input type="email" name="email" required></label><label>電話番号*<input name="phone" required></label><label>SNSアカウント<input name="sns"></label></fieldset>
-<fieldset><legend>撮影情報</legend><label>車種*<input name="vehicle" required></label><label>希望日時*<input name="preferred_date" placeholder="例: 2026-05-12 PM" required></label><label>撮影場所*<input name="location" required></label><label>用途*<input name="usage" placeholder="SNS / 雑誌風 / プロモーション" required></label><label>希望する雰囲気<textarea name="mood"></textarea></label><label>参考イメージURL<input type="url" name="reference_url"></label><label>備考<textarea name="notes"></textarea></label></fieldset>
-<fieldset><legend>同意</legend><label><input type="checkbox" name="consent" value="yes" required> 注意事項を確認し、概算見積もりであることに同意します。*</label></fieldset>
-<button class="btn" type="submit">概算を添えて依頼を送信する</button>
-</form><aside class="summary"><h3>概算見積もり内訳</h3><div id="estimate-summary"></div><p class="notice">本見積もりは概算です。正式な金額は、撮影条件、場所、スケジュール、天候、車両台数、使用用途等を確認後にご案内します。</p></aside></div></div></main>
-<footer><div class="container">送信後は自動返信メール（開発環境ではログ保存）を案内します。</div></footer><script src="/app.js"></script></body></html>
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estimate / Request</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav-row">
+    <a class="brand" href="/">KURIKI AUTOMOTIVE PHOTOGRAPHY</a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="primary-nav">MENU</button>
+    <nav id="primary-nav">
+      <ul>
+        <li><a href="/">HOME</a></li>
+        <li><a href="/portfolio.html">PORTFOLIO</a></li>
+        <li><a class="active" href="/estimate.html">ESTIMATE</a></li>
+        <li><a href="/about.html">ABOUT</a></li>
+        <li><a href="/notes.html">NOTES</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="section">
+  <div class="container">
+    <h1 style="font-family:var(--font-display);font-size:clamp(2rem,6vw,3.6rem)">Estimate / Request</h1>
+    <p class="lead">
+      プリセットを起点に、必要に応じて内容を追加・削除できます。<br>
+      ※プリセット内容を減らすとセット割引は解除されます。<a href="/notes.html">注意事項を見る</a>
+    </p>
+
+    <div class="two-col">
+      <form id="estimate-form">
+        <fieldset>
+          <legend>ベースプラン</legend>
+          <label><input type="radio" checked disabled> 1台撮影ベース（35,000円 税別）</label>
+        </fieldset>
+
+        <fieldset>
+          <legend>おすすめプリセット（割引適用）</legend>
+          <div id="preset-list" class="preset-grid"></div>
+        </fieldset>
+
+        <fieldset>
+          <legend>追加 / 調整オプション</legend>
+          <div id="option-list"></div>
+        </fieldset>
+
+        <fieldset>
+          <legend>撮影条件</legend>
+          <label>出張距離
+            <select name="travel_distance">
+              <option value="0">20km以内（追加なし）</option>
+              <option value="1">20〜50km（+5,000円）</option>
+              <option value="2">50km超（+10,000円）</option>
+            </select>
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend>お客様情報</legend>
+          <label>名前*<input name="name" autocomplete="name" required></label>
+          <label>メール*<input type="email" name="email" autocomplete="email" required></label>
+          <label>電話番号*<input name="phone" autocomplete="tel" required></label>
+          <label>SNSアカウント<input name="sns" placeholder="例: @your_account"></label>
+        </fieldset>
+
+        <fieldset>
+          <legend>撮影情報</legend>
+          <label>車種*<input name="vehicle" required></label>
+          <label>希望日時*<input name="preferred_date" placeholder="例: 2026-05-12 PM" required></label>
+          <label>撮影場所*<input name="location" required></label>
+          <label>用途*<input name="usage" placeholder="SNS投稿 / 雑誌風 / 広告素材" required></label>
+          <label>希望する雰囲気<textarea name="mood" placeholder="重厚感重視、夜景中心、艶感を強めたい など"></textarea></label>
+          <label>参考イメージURL<input type="url" name="reference_url"></label>
+          <label>備考<textarea name="notes"></textarea></label>
+        </fieldset>
+
+        <fieldset>
+          <legend>同意</legend>
+          <label><input type="checkbox" name="consent" value="yes" required> 注意事項を確認し、概算見積もりであることに同意します。*</label>
+        </fieldset>
+
+        <button class="btn" type="submit">概算を添えて依頼を送信する</button>
+        <p id="form-status" class="form-status" aria-live="polite"></p>
+      </form>
+
+      <aside class="summary">
+        <h3>概算見積もり内訳</h3>
+        <p id="discount-state" class="discount-state"></p>
+        <div id="estimate-summary"></div>
+        <p class="notice">本見積もりは概算です。正式な金額は、撮影条件、場所、スケジュール、天候、車両台数、使用用途等を確認後にご案内します。</p>
+      </aside>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container">送信後は自動返信メール（開発環境ではログ保存）を案内します。</div>
+</footer>
+<script src="/app.js"></script>
+</body>
+</html>
