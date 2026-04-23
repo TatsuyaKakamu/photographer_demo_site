@@ -301,14 +301,13 @@ function setupEstimate() {
 function setupFinderUI() {
   if (document.getElementById('finder-root')) return;
 
+  const FINDER_PAGES = new Set(['/', '/index.html', '/portfolio.html']);
+  if (!FINDER_PAGES.has(window.location.pathname)) return;
+
   const pageLabels = {
     '/': 'HOME',
     '/index.html': 'HOME',
-    '/portfolio.html': 'PORTFOLIO',
-    '/estimate.html': 'ESTIMATE',
-    '/about.html': 'ABOUT',
-    '/notes.html': 'NOTES',
-    '/thanks.html': 'THANKS'
+    '/portfolio.html': 'PORTFOLIO'
   };
   const pageName = pageLabels[window.location.pathname] ?? 'KURIKI';
 
@@ -323,10 +322,27 @@ function setupFinderUI() {
       <span class="af-bracket br"></span>
     </div>
     <div class="finder-hud" role="status" aria-live="off">
-      <div class="hud-corner hud-tl">ISO 400 · F2.8 · 1/250</div>
-      <div class="hud-corner hud-tr"><span class="hud-page">${pageName}</span> · <span class="hud-time">--:--</span></div>
-      <div class="hud-corner hud-bl">YOKOHAMA · JP</div>
-      <div class="hud-corner hud-br">BAT 87% · SHOTS <span class="hud-shots">0024</span></div>
+      <div class="hud-corner hud-tl">
+        <span class="hud-led"></span>
+        <span class="hud-item"><span class="hud-k">ISO</span>400</span>
+        <span class="hud-item"><span class="hud-k">F</span>2.8</span>
+        <span class="hud-item">1/250</span>
+      </div>
+      <div class="hud-corner hud-tr">
+        <span class="hud-led"></span>
+        <span class="hud-item hud-page">${pageName}</span>
+        <span class="hud-item hud-time">--:--</span>
+      </div>
+      <div class="hud-corner hud-bl">
+        <span class="hud-led"></span>
+        <span class="hud-item">YOKOHAMA</span>
+        <span class="hud-item">JP</span>
+      </div>
+      <div class="hud-corner hud-br">
+        <span class="hud-led hud-led--pulse"></span>
+        <span class="hud-item"><span class="hud-k">BAT</span>87%</span>
+        <span class="hud-item"><span class="hud-k">SHOTS</span><span class="hud-shots">0024</span></span>
+      </div>
     </div>
   `;
   document.body.appendChild(root);
