@@ -1,24 +1,126 @@
+const DEFAULT_BEFORE_FILTER = 'saturate(0.55) brightness(0.92) contrast(0.85) hue-rotate(8deg) blur(0.4px)';
+
 const works = [
-  { id:1, title:'Night Presence', scene:'Night', image:'https://images.unsplash.com/photo-1494905998402-395d579af36f?auto=format&fit=crop&w=1200&q=80' },
-  { id:2, title:'Urban Gloss', scene:'Urban', image:'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80' },
-  { id:3, title:'Coastal Light', scene:'Coastal', image:'https://images.unsplash.com/photo-1549317336-206569e8475c?auto=format&fit=crop&w=1200&q=80' },
-  { id:4, title:'Mountain Cut', scene:'Mountain', image:'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1200&q=80' },
-  { id:5, title:'Steel Detail', scene:'Detail', image:'https://images.unsplash.com/photo-1549924231-f129b911e442?auto=format&fit=crop&w=1200&q=80' },
-  { id:6, title:'Motion Blur', scene:'Motion', image:'https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=1200&q=80' },
-  { id:7, title:'Midnight Urban', scene:'Night', image:'https://images.unsplash.com/photo-1486496146582-9ffcd0b2b2b7?auto=format&fit=crop&w=1200&q=80' },
-  { id:8, title:'Editorial Avenue', scene:'Urban', image:'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1200&q=80' },
-  { id:9, title:'Seaside Drift', scene:'Coastal', image:'https://images.unsplash.com/photo-1553440569-bcc63803a83d?auto=format&fit=crop&w=1200&q=80' },
-  { id:10, title:'Ridge Frame', scene:'Mountain', image:'https://images.unsplash.com/photo-1489824904134-891ab64532f1?auto=format&fit=crop&w=1200&q=80' },
-  { id:11, title:'Badge & Carbon', scene:'Detail', image:'https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=80' },
-  { id:12, title:'Rolling Cut', scene:'Motion', image:'https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=1200&q=80' },
-  { id:13, title:'Noir Bodyline', scene:'Night', image:'https://images.unsplash.com/photo-1493238792000-8113da705763?auto=format&fit=crop&w=1200&q=80' },
-  { id:14, title:'Concrete Silence', scene:'Urban', image:'https://images.unsplash.com/photo-1517524206127-48bbd363f3d7?auto=format&fit=crop&w=1200&q=80' },
-  { id:15, title:'Salt Air', scene:'Coastal', image:'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?auto=format&fit=crop&w=1200&q=80' },
-  { id:16, title:'Alpine Tone', scene:'Mountain', image:'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&w=1200&q=80' },
-  { id:17, title:'Leather & Stitch', scene:'Detail', image:'https://images.unsplash.com/photo-1532581140115-3e355d1ed1de?auto=format&fit=crop&w=1200&q=80' },
-  { id:18, title:'Launch Pass', scene:'Motion', image:'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=80' },
-  { id:19, title:'Tunnel Reflection', scene:'Night', image:'https://images.unsplash.com/photo-1617654112368-307921291f42?auto=format&fit=crop&w=1200&q=80' },
-  { id:20, title:'Street Editorial', scene:'Urban', image:'https://images.unsplash.com/photo-1542282088-fe8426682b8f?auto=format&fit=crop&w=1200&q=80' },
+  {
+    id: 1, title: 'Night Presence', scene: 'Night',
+    image: 'https://images.unsplash.com/photo-1494905998402-395d579af36f?auto=format&fit=crop&w=1200&q=80',
+    exif: { location: '横浜 みなとみらい', time: '2024-11 / 22:14', camera: 'Sony α7R V + 24-70mm GM', iso: 800, f: 2.8, ss: '1/60' },
+    note: '街路灯の色温度が車体のメタリック塗装と合う瞬間を狙い、三脚でブラケット露光。'
+  },
+  {
+    id: 2, title: 'Urban Gloss', scene: 'Urban',
+    image: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80',
+    exif: { location: '東京 丸の内', time: '2024-09 / 16:42', camera: 'Canon EOS R5 + 70-200mm RF', iso: 400, f: 4.0, ss: '1/250' },
+    note: 'ガラス張りビルの映り込みを車体の縦ラインに重ね、わざと高さを合わせて構えた。'
+  },
+  {
+    id: 3, title: 'Coastal Light', scene: 'Coastal',
+    image: 'https://images.unsplash.com/photo-1549317336-206569e8475c?auto=format&fit=crop&w=1200&q=80',
+    exif: { location: '湘南 葉山', time: '2024-06 / 18:31', camera: 'Sony α7R V + 35mm GM', iso: 200, f: 5.6, ss: '1/500' },
+    note: '日没15分前、影が伸びる時間帯だけに現れる金色を得るため、朝からロケ待機。'
+  },
+  {
+    id: 4, title: 'Mountain Cut', scene: 'Mountain',
+    image: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1200&q=80',
+    exif: { location: '長野 美ヶ原', time: '2024-08 / 05:48', camera: 'Nikon Z9 + 70-200mm S', iso: 100, f: 8.0, ss: '1/320' },
+    note: '標高差で空気が澄む尾根道を選び、山肌を圧縮する望遠で車を風景の中に「置いた」。'
+  },
+  {
+    id: 5, title: 'Steel Detail', scene: 'Detail',
+    image: 'https://images.unsplash.com/photo-1549924231-f129b911e442?auto=format&fit=crop&w=1200&q=80',
+    exif: { location: 'スタジオ 世田谷', time: '2024-10 / 13:20', camera: 'Sony α7R V + 90mm Macro G', iso: 100, f: 11, ss: '1/125' },
+    note: 'ヘッドライト内側リフレクターを活かすため、光源をボディサイドに走らせ反射を制御。'
+  },
+  {
+    id: 6, title: 'Motion Blur', scene: 'Motion',
+    image: 'https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=1200&q=80',
+    exif: { location: '富士スピードウェイ', time: '2024-07 / 11:05', camera: 'Canon EOS R5 + 24-105mm RF', iso: 100, f: 16, ss: '1/30' },
+    note: '時速60kmで併走しながら1/30秒。ISO100まで落として昼光下でもブレ量を確保。'
+  },
+  {
+    id: 7, title: 'Midnight Urban', scene: 'Night',
+    image: 'https://images.unsplash.com/photo-1486496146582-9ffcd0b2b2b7?auto=format&fit=crop&w=1200&q=80',
+    exif: { location: '渋谷スクランブル', time: '2024-12 / 23:47', camera: 'Sony α7R V + 50mm GM', iso: 1600, f: 1.8, ss: '1/80' },
+    note: 'ネオンの色ムラを背景に溶かすため、絞り開放でボケを深く作った。'
+  },
+  {
+    id: 8, title: 'Editorial Avenue', scene: 'Urban',
+    image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1200&q=80',
+    exif: { location: '大阪 中之島', time: '2024-10 / 15:15', camera: 'Canon EOS R5 + 24mm RF', iso: 200, f: 5.6, ss: '1/400' },
+    note: '歩道橋の上から見下ろす構図。都市のスケール感を出すため24mm広角を選択。'
+  },
+  {
+    id: 9, title: 'Seaside Drift', scene: 'Coastal',
+    image: 'https://images.unsplash.com/photo-1553440569-bcc63803a83d?auto=format&fit=crop&w=1200&q=80',
+    exif: { location: '鎌倉 七里ヶ浜', time: '2024-05 / 17:12', camera: 'Sony α7R V + 24-70mm GM', iso: 160, f: 4.0, ss: '1/800' },
+    note: '塩害を避けつつ波打ち際ギリギリ。潮位表を確認してベストの30分だけ撮影。'
+  },
+  {
+    id: 10, title: 'Ridge Frame', scene: 'Mountain',
+    image: 'https://images.unsplash.com/photo-1489824904134-891ab64532f1?auto=format&fit=crop&w=1200&q=80',
+    exif: { location: '群馬 志賀高原', time: '2024-09 / 06:34', camera: 'Nikon Z9 + 24-120mm S', iso: 125, f: 9.0, ss: '1/250' },
+    note: '雲海の切れ間を3時間待機。前景の低木を入れて車のスケール感を強調した。'
+  },
+  {
+    id: 11, title: 'Badge & Carbon', scene: 'Detail',
+    image: 'https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=80',
+    exif: { location: 'スタジオ 港南', time: '2024-11 / 10:05', camera: 'Sony α7R V + 90mm Macro G', iso: 100, f: 5.6, ss: '1/160' },
+    note: 'カーボン織目の微細な反射を殺さないよう、半逆光＋ディフューザー1枚で調整。'
+  },
+  {
+    id: 12, title: 'Rolling Cut', scene: 'Motion',
+    image: 'https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=1200&q=80',
+    exif: { location: '箱根ターンパイク', time: '2024-07 / 14:22', camera: 'Canon EOS R5 + 70-200mm RF', iso: 100, f: 11, ss: '1/60' },
+    note: 'カーブ進入を狙い、パン追従の速度を合わせるためシャッタータイミングを3回リハ。'
+  },
+  {
+    id: 13, title: 'Noir Bodyline', scene: 'Night',
+    image: 'https://images.unsplash.com/photo-1493238792000-8113da705763?auto=format&fit=crop&w=1200&q=80',
+    exif: { location: '六本木ヒルズ', time: '2024-12 / 21:08', camera: 'Sony α7R V + 55mm ZA', iso: 640, f: 2.0, ss: '1/50' },
+    note: '単一光源（街灯）のみで陰影を描写。全体を黒に近づけ、ボディラインだけが浮かぶように。'
+  },
+  {
+    id: 14, title: 'Concrete Silence', scene: 'Urban',
+    image: 'https://images.unsplash.com/photo-1517524206127-48bbd363f3d7?auto=format&fit=crop&w=1200&q=80',
+    exif: { location: '品川 倉庫街', time: '2024-10 / 17:50', camera: 'Canon EOS R5 + 35mm RF', iso: 200, f: 8.0, ss: '1/200' },
+    note: 'コンクリート壁の凹凸が夕日に照らされる数分間のみ発生する質感を狙った。'
+  },
+  {
+    id: 15, title: 'Salt Air', scene: 'Coastal',
+    image: 'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?auto=format&fit=crop&w=1200&q=80',
+    exif: { location: '千葉 九十九里', time: '2024-08 / 05:22', camera: 'Sony α7R V + 85mm GM', iso: 250, f: 4.0, ss: '1/1000' },
+    note: '朝霧越しの逆光で車体の輪郭だけが霧ににじむ時間を、3日通って確保。'
+  },
+  {
+    id: 16, title: 'Alpine Tone', scene: 'Mountain',
+    image: 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&w=1200&q=80',
+    exif: { location: '北海道 美瑛', time: '2024-09 / 10:18', camera: 'Nikon Z9 + 35mm S', iso: 100, f: 7.1, ss: '1/400' },
+    note: '高山植物の緑と車体マットカラーの色差を作るため、彩度を現場で追い込んだ。'
+  },
+  {
+    id: 17, title: 'Leather & Stitch', scene: 'Detail',
+    image: 'https://images.unsplash.com/photo-1532581140115-3e355d1ed1de?auto=format&fit=crop&w=1200&q=80',
+    exif: { location: 'スタジオ 世田谷', time: '2024-11 / 14:40', camera: 'Sony α7R V + 90mm Macro G', iso: 100, f: 8.0, ss: '1/125' },
+    note: '車内ダッシュボードのステッチ。三脚で手振れゼロを確保し、精細を優先。'
+  },
+  {
+    id: 18, title: 'Launch Pass', scene: 'Motion',
+    image: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=80',
+    exif: { location: '富士スピードウェイ', time: '2024-07 / 09:40', camera: 'Canon EOS R5 + 16-35mm RF', iso: 200, f: 6.3, ss: '1/1600' },
+    note: 'スタート加速の瞬間、ローアングル10cmで車体下の気流を写し込む。'
+  },
+  {
+    id: 19, title: 'Tunnel Reflection', scene: 'Night',
+    image: 'https://images.unsplash.com/photo-1617654112368-307921291f42?auto=format&fit=crop&w=1200&q=80',
+    exif: { location: '首都高 山手トンネル', time: '2024-12 / 02:34', camera: 'Sony α7R V + 24-70mm GM', iso: 1250, f: 2.8, ss: '1/100' },
+    note: 'トンネル照明の色温度が揃う区間を下見で特定、通行量が減る深夜に撮影。'
+  },
+  {
+    id: 20, title: 'Street Editorial', scene: 'Urban',
+    image: 'https://images.unsplash.com/photo-1542282088-fe8426682b8f?auto=format&fit=crop&w=1200&q=80',
+    exif: { location: '京都 祇園', time: '2024-10 / 16:05', camera: 'Canon EOS R5 + 50mm RF', iso: 320, f: 4.5, ss: '1/500' },
+    note: '街路樹の影が車体を横切る瞬間を狙い、太陽の方位と時刻を事前計算。'
+  },
 ];
 
 const yen = (value) => `${value.toLocaleString('ja-JP')}円`;
@@ -64,20 +166,29 @@ const estimateConfig = {
   }
 };
 
+let currentFilteredIds = [];
+
 function mountGallery(targetId, limit = 20, scene = 'All') {
   const root = document.getElementById(targetId);
   if (!root) return;
 
-  root.innerHTML = '';
-  works
+  const filtered = works
     .filter((w) => scene === 'All' || w.scene === scene)
-    .slice(0, limit)
-    .forEach((w) => {
-      const el = document.createElement('article');
-      el.className = 'work reveal';
-      el.innerHTML = `<img loading="lazy" src="${w.image}" alt="${w.title} - ${w.scene} style car photograph"><span>${w.scene}</span>`;
-      root.appendChild(el);
-    });
+    .slice(0, limit);
+
+  currentFilteredIds = filtered.map((w) => w.id);
+
+  root.innerHTML = '';
+  filtered.forEach((w) => {
+    const el = document.createElement('article');
+    el.className = 'work reveal';
+    el.tabIndex = 0;
+    el.dataset.workId = String(w.id);
+    el.setAttribute('role', 'button');
+    el.setAttribute('aria-label', `${w.title} を拡大して Before/After と撮影データを見る`);
+    el.innerHTML = `<img loading="lazy" src="${w.image}" alt="${w.title} - ${w.scene} style car photograph"><span>${w.scene}</span>`;
+    root.appendChild(el);
+  });
 
   setupReveals();
 }
@@ -439,6 +550,243 @@ function setupFinderUI() {
   }, { passive: true });
 }
 
+function setupLightbox() {
+  if (document.getElementById('lightbox-root')) return;
+
+  const root = document.createElement('div');
+  root.id = 'lightbox-root';
+  root.className = 'lightbox';
+  root.setAttribute('role', 'dialog');
+  root.setAttribute('aria-modal', 'true');
+  root.setAttribute('aria-labelledby', 'lightbox-title');
+  root.hidden = true;
+  root.innerHTML = `
+    <div class="lightbox-overlay" data-lb-close aria-hidden="true"></div>
+    <div class="lightbox-ring" aria-hidden="true"></div>
+    <button type="button" class="lightbox-close" data-lb-close aria-label="閉じる">×</button>
+    <div class="lightbox-stage">
+      <img class="ba-after" alt="" draggable="false">
+      <img class="ba-before" alt="" draggable="false">
+      <span class="ba-label ba-label-before">BEFORE 撮って出し</span>
+      <span class="ba-label ba-label-after">AFTER レタッチ</span>
+      <button type="button" class="lightbox-prev" data-lb-prev aria-label="前の作品">‹</button>
+      <button type="button" class="lightbox-next" data-lb-next aria-label="次の作品">›</button>
+      <div class="ba-handle" role="slider" aria-label="Before/After 比較スライダー" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" tabindex="0">
+        <span class="ba-handle-bar"></span>
+        <span class="ba-handle-dot"></span>
+      </div>
+    </div>
+    <aside class="lightbox-exif">
+      <div class="exif-head">
+        <span class="exif-scene"></span>
+        <h3 id="lightbox-title" class="exif-title">—</h3>
+        <span class="exif-count"></span>
+      </div>
+      <div class="exif-chip"><span class="exif-ico" aria-hidden="true">📍</span><span class="exif-k">Location</span><span class="exif-v" data-k="location"></span></div>
+      <div class="exif-chip"><span class="exif-ico" aria-hidden="true">🕐</span><span class="exif-k">Time</span><span class="exif-v" data-k="time"></span></div>
+      <div class="exif-chip"><span class="exif-ico" aria-hidden="true">📷</span><span class="exif-k">Camera</span><span class="exif-v" data-k="camera"></span></div>
+      <div class="exif-chip"><span class="exif-ico" aria-hidden="true">⚙️</span><span class="exif-k">Exposure</span><span class="exif-v" data-k="settings"></span></div>
+      <div class="exif-note"><span class="exif-ico" aria-hidden="true">💭</span><span class="exif-v" data-k="note"></span></div>
+      <p class="exif-hint">← → で前後、Esc で閉じる / ハンドルをドラッグで Before/After</p>
+    </aside>
+  `;
+  document.body.appendChild(root);
+
+  const ring = root.querySelector('.lightbox-ring');
+  const closeBtn = root.querySelector('.lightbox-close');
+  const prevBtn = root.querySelector('.lightbox-prev');
+  const nextBtn = root.querySelector('.lightbox-next');
+  const stage = root.querySelector('.lightbox-stage');
+  const handle = root.querySelector('.ba-handle');
+  const beforeImg = root.querySelector('.ba-before');
+  const afterImg = root.querySelector('.ba-after');
+  const titleEl = root.querySelector('#lightbox-title');
+  const sceneEl = root.querySelector('.exif-scene');
+  const countEl = root.querySelector('.exif-count');
+  const vLoc = root.querySelector('[data-k="location"]');
+  const vTime = root.querySelector('[data-k="time"]');
+  const vCam = root.querySelector('[data-k="camera"]');
+  const vSet = root.querySelector('[data-k="settings"]');
+  const vNote = root.querySelector('[data-k="note"]');
+
+  let currentIndex = -1;
+  let lastFocus = null;
+  let baPos = 50;
+
+  const setPos = (p) => {
+    baPos = Math.max(0, Math.min(100, p));
+    stage.style.setProperty('--ba-pos', `${baPos}%`);
+    handle.setAttribute('aria-valuenow', String(Math.round(baPos)));
+  };
+
+  const hiRes = (url) => url.replace('w=1200', 'w=1800').replace('q=80', 'q=85');
+
+  const renderSlide = (index) => {
+    const id = currentFilteredIds[index];
+    const w = works.find((x) => x.id === id);
+    if (!w) return;
+    currentIndex = index;
+    const url = hiRes(w.image);
+    beforeImg.src = url;
+    afterImg.src = url;
+    beforeImg.alt = `${w.title} - 撮って出し (before)`;
+    afterImg.alt = `${w.title} - レタッチ済み (after)`;
+    stage.style.setProperty('--before-filter', w.beforeFilter || DEFAULT_BEFORE_FILTER);
+    titleEl.textContent = w.title;
+    sceneEl.textContent = w.scene;
+    countEl.textContent = `${index + 1} / ${currentFilteredIds.length}`;
+    vLoc.textContent = w.exif.location;
+    vTime.textContent = w.exif.time;
+    vCam.textContent = w.exif.camera;
+    vSet.textContent = `ISO ${w.exif.iso} · F${w.exif.f} · ${w.exif.ss}`;
+    vNote.textContent = w.note;
+    setPos(50);
+  };
+
+  const openLightbox = (id) => {
+    if (!currentFilteredIds.length) return;
+    const index = currentFilteredIds.indexOf(id);
+    if (index < 0) return;
+    lastFocus = document.activeElement;
+    root.hidden = false;
+    document.body.classList.add('lightbox-open');
+    renderSlide(index);
+    ring.classList.remove('active');
+    void ring.offsetWidth;
+    ring.classList.add('active');
+    setTimeout(() => ring.classList.remove('active'), 650);
+    closeBtn.focus();
+  };
+
+  const closeLightbox = () => {
+    if (root.hidden) return;
+    root.hidden = true;
+    document.body.classList.remove('lightbox-open');
+    if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
+  };
+
+  const navigate = (delta) => {
+    const len = currentFilteredIds.length;
+    if (!len) return;
+    renderSlide((currentIndex + delta + len) % len);
+  };
+
+  document.addEventListener('click', (e) => {
+    if (document.body.classList.contains('lightbox-open')) return;
+    const work = e.target.closest('.work[data-work-id]');
+    if (!work) return;
+    openLightbox(Number(work.dataset.workId));
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (document.body.classList.contains('lightbox-open')) return;
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const work = e.target.closest?.('.work[data-work-id]');
+    if (!work) return;
+    e.preventDefault();
+    openLightbox(Number(work.dataset.workId));
+  });
+
+  root.addEventListener('click', (e) => {
+    if (e.target.closest('[data-lb-close]')) closeLightbox();
+    else if (e.target.closest('[data-lb-prev]')) navigate(-1);
+    else if (e.target.closest('[data-lb-next]')) navigate(1);
+  });
+
+  root.addEventListener('keydown', (e) => {
+    if (root.hidden) return;
+    const onHandle = document.activeElement === handle;
+    switch (e.key) {
+      case 'Escape':
+        e.preventDefault();
+        closeLightbox();
+        break;
+      case 'ArrowLeft':
+        e.preventDefault();
+        if (onHandle) setPos(baPos - 2); else navigate(-1);
+        break;
+      case 'ArrowRight':
+        e.preventDefault();
+        if (onHandle) setPos(baPos + 2); else navigate(1);
+        break;
+      case 'Home':
+        e.preventDefault();
+        setPos(0);
+        break;
+      case 'End':
+        e.preventDefault();
+        setPos(100);
+        break;
+      case 'Tab': {
+        const focusables = [closeBtn, prevBtn, handle, nextBtn];
+        const idx = focusables.indexOf(document.activeElement);
+        if (idx < 0) { e.preventDefault(); closeBtn.focus(); return; }
+        if (e.shiftKey && idx === 0) { e.preventDefault(); focusables[focusables.length - 1].focus(); }
+        else if (!e.shiftKey && idx === focusables.length - 1) { e.preventDefault(); focusables[0].focus(); }
+        break;
+      }
+    }
+  });
+
+  const xToPct = (x) => {
+    const rect = stage.getBoundingClientRect();
+    return ((x - rect.left) / rect.width) * 100;
+  };
+
+  let draggingHandle = false;
+  handle.addEventListener('pointerdown', (e) => {
+    draggingHandle = true;
+    try { handle.setPointerCapture(e.pointerId); } catch {}
+    e.stopPropagation();
+    e.preventDefault();
+  });
+  handle.addEventListener('pointermove', (e) => {
+    if (!draggingHandle) return;
+    setPos(xToPct(e.clientX));
+  });
+  const endHandleDrag = (e) => {
+    if (!draggingHandle) return;
+    draggingHandle = false;
+    try { handle.releasePointerCapture(e.pointerId); } catch {}
+  };
+  handle.addEventListener('pointerup', endHandleDrag);
+  handle.addEventListener('pointercancel', endHandleDrag);
+
+  let gesture = null;
+  stage.addEventListener('pointerdown', (e) => {
+    if (e.target.closest('.ba-handle, button')) return;
+    gesture = {
+      id: e.pointerId, type: e.pointerType,
+      startX: e.clientX, startY: e.clientY, isSwipe: false
+    };
+    try { stage.setPointerCapture(e.pointerId); } catch {}
+    if (e.pointerType === 'mouse') setPos(xToPct(e.clientX));
+  });
+  stage.addEventListener('pointermove', (e) => {
+    if (!gesture || gesture.id !== e.pointerId) return;
+    const dx = e.clientX - gesture.startX;
+    const dy = e.clientY - gesture.startY;
+    if (gesture.type === 'touch') {
+      if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy)) gesture.isSwipe = true;
+      if (!gesture.isSwipe) setPos(xToPct(e.clientX));
+    } else if (gesture.type === 'mouse') {
+      setPos(xToPct(e.clientX));
+    }
+  });
+  stage.addEventListener('pointerup', (e) => {
+    if (!gesture || gesture.id !== e.pointerId) return;
+    const dx = e.clientX - gesture.startX;
+    if (gesture.isSwipe && Math.abs(dx) > 50) navigate(dx < 0 ? 1 : -1);
+    else if (gesture.type === 'touch' && !gesture.isSwipe) setPos(xToPct(e.clientX));
+    try { stage.releasePointerCapture(e.pointerId); } catch {}
+    gesture = null;
+  });
+  stage.addEventListener('pointercancel', (e) => {
+    try { stage.releasePointerCapture(e.pointerId); } catch {}
+    gesture = null;
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   setupHeroSlider();
   setupReveals();
@@ -447,6 +795,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupMobileNav();
   setupEstimate();
   setupFinderUI();
+  setupLightbox();
 
   if (document.getElementById('featured-grid')) mountGallery('featured-grid', 8);
   if (document.getElementById('portfolio-grid')) mountGallery('portfolio-grid', 20);
