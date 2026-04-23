@@ -101,9 +101,59 @@ function setupHeroSlider() {
 
   setInterval(() => {
     slides[current].classList.remove('active');
+    slides[current].classList.remove('focus-shift');
     current = (current + 1) % slides.length;
-    slides[current].classList.add('active');
+    slides[current].classList.add('focus-shift');
+    requestAnimationFrame(() => {
+      slides[current].classList.add('active');
+    });
+    setTimeout(() => {
+      slides[current].classList.remove('focus-shift');
+    }, 520);
   }, 5200);
+}
+
+function setupViewfinderOverlay() {
+  const overlay = document.querySelector('.viewfinder-overlay');
+  const afFrame = overlay?.querySelector('.af-frame');
+  if (!overlay || !afFrame) return;
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reducedMotion) return;
+
+  const hudPresets = {
+    '/': { iso: 'ISO 200', f: 'F1.8', ss: '1/500', focal: '50mm' },
+    '/index.html': { iso: 'ISO 200', f: 'F1.8', ss: '1/500', focal: '50mm' },
+    '/portfolio.html': { iso: 'ISO 320', f: 'F4.0', ss: '1/250', focal: '85mm' },
+    '/estimate.html': { iso: 'ISO 640', f: 'F2.8', ss: '1/160', focal: '35mm' },
+    '/about.html': { iso: 'ISO 500', f: 'F2.2', ss: '1/200', focal: '40mm' },
+    '/notes.html': { iso: 'ISO 100', f: 'F5.6', ss: '1/80', focal: '24mm' },
+    '/thanks.html': { iso: 'ISO 250', f: 'F2.0', ss: '1/320', focal: '58mm' }
+  };
+  const activeHud = hudPresets[location.pathname] ?? hudPresets['/'];
+  Object.entries(activeHud).forEach(([key, value]) => {
+    const hud = overlay.querySelector(`[data-hud="${key}"]`);
+    if (hud) hud.textContent = value;
+  });
+
+  const moveFrame = (event) => {
+    const x = Math.min(window.innerWidth - 24, Math.max(24, event.clientX));
+    const y = Math.min(window.innerHeight - 24, Math.max(24, event.clientY));
+    afFrame.style.left = `${x}px`;
+    afFrame.style.top = `${y}px`;
+  };
+
+  window.addEventListener('pointermove', moveFrame, { passive: true });
+  window.addEventListener('mousemove', moveFrame, { passive: true });
+
+  let flashTimer;
+  window.addEventListener('scroll', () => {
+    clearTimeout(flashTimer);
+    flashTimer = setTimeout(() => {
+      overlay.classList.add('flash-active');
+      setTimeout(() => overlay.classList.remove('flash-active'), 120);
+    }, 110);
+  }, { passive: true });
 }
 
 function setupFloatingCta() {
@@ -299,6 +349,7 @@ function setupEstimate() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  setupViewfinderOverlay();
   setupHeroSlider();
   setupReveals();
   setupFloatingCta();
