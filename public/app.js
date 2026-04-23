@@ -298,6 +298,147 @@ function setupEstimate() {
   });
 }
 
+function setupFinderUI() {
+  if (document.getElementById('finder-root')) return;
+
+  const FINDER_PAGES = new Set(['/', '/index.html', '/portfolio.html']);
+  if (!FINDER_PAGES.has(window.location.pathname)) return;
+
+  const pageLabels = {
+    '/': 'HOME',
+    '/index.html': 'HOME',
+    '/portfolio.html': 'PORTFOLIO'
+  };
+  const pageName = pageLabels[window.location.pathname] ?? 'KURIKI';
+
+  const root = document.createElement('div');
+  root.id = 'finder-root';
+  root.setAttribute('aria-hidden', 'true');
+  root.innerHTML = `
+    <div class="finder-af" id="finder-af">
+      <span class="af-bracket tl"></span>
+      <span class="af-bracket tr"></span>
+      <span class="af-bracket bl"></span>
+      <span class="af-bracket br"></span>
+    </div>
+    <div class="finder-hud" role="status" aria-live="off">
+      <div class="hud-corner hud-tl">
+        <span class="hud-led"></span>
+        <span class="hud-item"><span class="hud-k">ISO</span>400</span>
+        <span class="hud-item"><span class="hud-k">F</span>2.8</span>
+        <span class="hud-item">1/250</span>
+      </div>
+      <div class="hud-corner hud-tr">
+        <span class="hud-led"></span>
+        <span class="hud-item hud-page">${pageName}</span>
+        <span class="hud-item hud-time">--:--</span>
+      </div>
+      <div class="hud-corner hud-bl">
+        <span class="hud-led"></span>
+        <span class="hud-item">YOKOHAMA</span>
+        <span class="hud-item">JP</span>
+      </div>
+      <div class="hud-corner hud-br">
+        <span class="hud-led hud-led--pulse"></span>
+        <span class="hud-item"><span class="hud-k">BAT</span>87%</span>
+        <span class="hud-item"><span class="hud-k">SHOTS</span><span class="hud-shots">0024</span></span>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(root);
+
+  const toggle = document.createElement('button');
+  toggle.id = 'finder-toggle';
+  toggle.className = 'finder-toggle';
+  toggle.type = 'button';
+  toggle.innerHTML = '<span class="finder-dot"></span><span class="finder-label">FINDER</span>';
+  document.body.appendChild(toggle);
+
+  const STORAGE_KEY = 'kuriki.finder';
+  const stored = localStorage.getItem(STORAGE_KEY);
+  const finderOn = stored === null ? true : stored === 'on';
+  const applyState = (on) => {
+    document.body.classList.toggle('finder-on', on);
+    document.body.classList.toggle('finder-off', !on);
+    toggle.setAttribute('aria-pressed', String(on));
+    toggle.querySelector('.finder-label').textContent = on ? 'FINDER ON' : 'FINDER OFF';
+  };
+  applyState(finderOn);
+
+  toggle.addEventListener('click', () => {
+    const next = !document.body.classList.contains('finder-on');
+    localStorage.setItem(STORAGE_KEY, next ? 'on' : 'off');
+    applyState(next);
+  });
+
+  const af = root.querySelector('#finder-af');
+  const mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+  const rendered = { x: mouse.x, y: mouse.y };
+  let snapTarget = null;
+
+  const updateSnap = (el) => {
+    if (!el || !el.isConnected) { snapTarget = null; af.classList.remove('snap'); return; }
+    const rect = el.getBoundingClientRect();
+    snapTarget = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+    af.classList.add('snap');
+  };
+
+  document.addEventListener('pointermove', (e) => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+    af.classList.add('visible');
+  });
+  document.addEventListener('pointerleave', () => af.classList.remove('visible'));
+
+  document.addEventListener('pointerover', (e) => {
+    const target = e.target.closest('a, button, .work');
+    if (target && !target.closest('#finder-toggle')) updateSnap(target);
+  });
+  document.addEventListener('pointerout', (e) => {
+    const target = e.target.closest('a, button, .work');
+    if (target && !target.closest('#finder-toggle')) {
+      snapTarget = null;
+      af.classList.remove('snap');
+    }
+  });
+
+  const tick = () => {
+    const target = snapTarget ?? mouse;
+    rendered.x += (target.x - rendered.x) * 0.22;
+    rendered.y += (target.y - rendered.y) * 0.22;
+    af.style.transform = `translate3d(${rendered.x}px, ${rendered.y}px, 0) translate(-50%, -50%)`;
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+
+  const timeEl = root.querySelector('.hud-time');
+  const updateTime = () => {
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, '0');
+    const mm = pad(now.getMonth() + 1);
+    const dd = pad(now.getDate());
+    const hh = pad(now.getHours());
+    const mi = pad(now.getMinutes());
+    timeEl.textContent = `${mm}/${dd} ${hh}:${mi}`;
+  };
+  updateTime();
+  setInterval(updateTime, 30 * 1000);
+
+  const shotsEl = root.querySelector('.hud-shots');
+  let shots = 24;
+  let lastShotY = window.scrollY;
+  const SHOT_STEP = 360;
+  window.addEventListener('scroll', () => {
+    if (Math.abs(window.scrollY - lastShotY) >= SHOT_STEP) {
+      shots += 1;
+      lastShotY = window.scrollY;
+      shotsEl.textContent = String(shots).padStart(4, '0');
+      shotsEl.parentElement.classList.add('hud-blink');
+      setTimeout(() => shotsEl.parentElement.classList.remove('hud-blink'), 180);
+    }
+  }, { passive: true });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   setupHeroSlider();
   setupReveals();
@@ -305,6 +446,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupFilters();
   setupMobileNav();
   setupEstimate();
+  setupFinderUI();
 
   if (document.getElementById('featured-grid')) mountGallery('featured-grid', 8);
   if (document.getElementById('portfolio-grid')) mountGallery('portfolio-grid', 20);
