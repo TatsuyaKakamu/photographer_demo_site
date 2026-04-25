@@ -377,36 +377,51 @@ function setupEstimate() {
   syncOptionsFromPreset();
   compute();
 
-  form.addEventListener('submit', async (e) => {
+  form.addEventListener('submit', (e) => {
     e.preventDefault();
     const consent = form.querySelector('input[name="consent"]');
     if (!consent?.checked) return;
 
-    const estimate = compute();
-    const formData = new FormData(form);
-    const payload = Object.fromEntries(formData.entries());
-    payload.options = [...form.querySelectorAll('input[name="options"]:checked')].map((i) => i.value);
-    payload.estimate = estimate;
-
     const submitBtn = form.querySelector('button[type="submit"]');
     submitBtn.disabled = true;
-    submitBtn.textContent = '送信中...';
     status.textContent = '';
 
-    try {
-      const res = await fetch('/api/request', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      if (!res.ok) throw new Error('network');
-      window.location.href = '/thanks.html';
-    } catch {
-      status.textContent = '送信に失敗しました。時間を置いて再度お試しください。';
-      submitBtn.disabled = false;
-      submitBtn.textContent = '概算を添えて依頼を送信する';
-    }
+    showDemoModal({
+      onConfirm: () => { window.location.href = 'thanks.html'; },
+      onCancel: () => { submitBtn.disabled = false; }
+    });
   });
+}
+
+function showDemoModal({ onConfirm, onCancel }) {
+  const existing = document.getElementById('demo-modal');
+  if (existing) existing.remove();
+
+  const overlay = document.createElement('div');
+  overlay.id = 'demo-modal';
+  overlay.className = 'demo-modal-overlay';
+  overlay.innerHTML = `
+    <div class="demo-modal-card card" role="dialog" aria-modal="true" aria-labelledby="demo-modal-title">
+      <h3 id="demo-modal-title">これはデモサイトです</h3>
+      <p>フォームの送信処理は実行されません。実運用では、入力された内容が指定アドレスへメール送信される想定です。</p>
+      <div class="btn-row">
+        <button type="button" class="btn" data-demo-action="confirm">デモ完了画面を見る</button>
+        <button type="button" class="btn secondary" data-demo-action="cancel">フォームに戻る</button>
+      </div>
+    </div>
+  `;
+
+  const close = (cb) => { overlay.remove(); document.removeEventListener('keydown', onKey); cb?.(); };
+  const onKey = (ev) => { if (ev.key === 'Escape') close(onCancel); };
+
+  overlay.addEventListener('click', (ev) => {
+    const action = ev.target.closest('[data-demo-action]')?.dataset.demoAction;
+    if (action === 'confirm') close(onConfirm);
+    else if (action === 'cancel' || ev.target === overlay) close(onCancel);
+  });
+  document.addEventListener('keydown', onKey);
+  document.body.appendChild(overlay);
+  overlay.querySelector('[data-demo-action="confirm"]')?.focus();
 }
 
 function setupFinderUI() {
