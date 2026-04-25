@@ -15,7 +15,7 @@ const works = [
   },
   {
     id: 3, title: 'Coastal Light', scene: 'Coastal',
-    image: 'https://images.unsplash.com/photo-1549317336-206569e8475c?auto=format&fit=crop&w=1200&q=80',
+    image: 'assets/portfolio/coastal-light-generated.jpg',
     exif: { location: '湘南 葉山', time: '2024-06 / 18:31', camera: 'Sony α7R V + 35mm GM', iso: 200, f: 5.6, ss: '1/500' },
     note: '日没15分前、影が伸びる時間帯だけに現れる金色を得るため、朝からロケ待機。'
   },
@@ -27,7 +27,7 @@ const works = [
   },
   {
     id: 5, title: 'Steel Detail', scene: 'Detail',
-    image: 'https://images.unsplash.com/photo-1549924231-f129b911e442?auto=format&fit=crop&w=1200&q=80',
+    image: 'assets/portfolio/steel-detail-generated.jpg',
     exif: { location: 'スタジオ 世田谷', time: '2024-10 / 13:20', camera: 'Sony α7R V + 90mm Macro G', iso: 100, f: 11, ss: '1/125' },
     note: 'ヘッドライト内側リフレクターを活かすため、光源をボディサイドに走らせ反射を制御。'
   },
@@ -39,7 +39,7 @@ const works = [
   },
   {
     id: 7, title: 'Midnight Urban', scene: 'Night',
-    image: 'https://images.unsplash.com/photo-1486496146582-9ffcd0b2b2b7?auto=format&fit=crop&w=1200&q=80',
+    image: 'assets/portfolio/midnight-urban-generated.jpg',
     exif: { location: '渋谷スクランブル', time: '2024-12 / 23:47', camera: 'Sony α7R V + 50mm GM', iso: 1600, f: 1.8, ss: '1/80' },
     note: 'ネオンの色ムラを背景に溶かすため、絞り開放でボケを深く作った。'
   },
