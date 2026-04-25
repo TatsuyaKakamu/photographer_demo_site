@@ -1,3 +1,4 @@
 data/requests.json
 data/mail.log
 /tmp
+.DS_Store
