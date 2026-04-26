@@ -435,7 +435,7 @@ function setupFinderUI() {
     '/index.html': 'HOME',
     '/portfolio.html': 'PORTFOLIO'
   };
-  const pageName = pageLabels[window.location.pathname] ?? 'KURIKI';
+  const pageName = pageLabels[window.location.pathname] ?? 'BRAND';
 
   const root = document.createElement('div');
   root.id = 'finder-root';
@@ -480,7 +480,7 @@ function setupFinderUI() {
   toggle.innerHTML = '<span class="finder-dot"></span><span class="finder-label">FINDER</span>';
   document.body.appendChild(toggle);
 
-  const STORAGE_KEY = 'kuriki.finder';
+  const STORAGE_KEY = 'brand.finder';
   const stored = localStorage.getItem(STORAGE_KEY);
   const finderOn = stored === null ? true : stored === 'on';
   const applyState = (on) => {

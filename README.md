@@ -1,4 +1,4 @@
-# KURIKI AUTOMOTIVE PHOTOGRAPHY
+# BRAND AUTOMOTIVE PHOTOGRAPHY
 
 車写真を主軸とした高級感あるポートフォリオサイトです。**デモサイト**として公開されており、フォーム送信は擬似的に動作します（実際のメール送信は行いません）。
 
