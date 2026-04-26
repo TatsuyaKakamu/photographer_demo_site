@@ -42,7 +42,7 @@
 ### 2.1 仮ブランド名
 正式名称は未確定だが、現時点の推奨仮設定は以下。
 
-**KURIKI AUTOMOTIVE PHOTOGRAPHY**
+**BRAND AUTOMOTIVE PHOTOGRAPHY**
 
 ### 2.2 ブランド表現の方向性
 - 高級・ラグジュアリー
